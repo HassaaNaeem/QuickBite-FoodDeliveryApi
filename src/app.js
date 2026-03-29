@@ -11,4 +11,5 @@ function createApp() {
   app.use("/api/v1/restaurants", restaurantRouter);
   return app;
 }
+
 export default createApp;
