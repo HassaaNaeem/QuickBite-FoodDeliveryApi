@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: 3,
+      trim: true,
     },
     email: {
       required: true,
@@ -14,6 +15,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      immutabe: true,
     },
     password: {
       required: true,
@@ -53,7 +55,7 @@ const userSchema = new mongoose.Schema(
       {
         token: {
           type: String,
-          require: true,
+          required: true,
         },
         createdAt: {
           type: Date,
@@ -61,7 +63,7 @@ const userSchema = new mongoose.Schema(
         },
         expiresAt: {
           type: Date,
-          require: true,
+          required: true,
         },
       },
     ],
