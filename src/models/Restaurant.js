@@ -17,7 +17,18 @@ const restaurantSchema = new mongoose.Schema({
     minlength: 10,
   },
   cuisines: [String],
-  location: { GeoJSONPoint: { type: "Point", coordinates: [lng, lat] } },
+  location: {
+    type: {
+      type: "Point",
+      required: true,
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
+    },
+    required: true,
+    index: "2dsphere",
+  },
   address: {
     type: String,
     required: true,
