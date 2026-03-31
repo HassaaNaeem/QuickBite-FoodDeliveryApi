@@ -10,21 +10,30 @@ const restaurantSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required: true,
   },
   description: {
     type: String,
     required: true,
     minlength: 10,
   },
-  cuisines: [String],
+  cuisines: {
+    type: [String],
+    default: [],
+  },
   location: {
     type: {
-      type: "Point",
+      type: String,
+      enum: ["Point"],
       required: true,
     },
     coordinates: {
       type: [Number],
       required: true,
+      validate: {
+        validator: (val) => val.length === 2,
+        message: "Coordinates must be [lng, lat]",
+      },
     },
     required: true,
     index: "2dsphere",
@@ -36,12 +45,13 @@ const restaurantSchema = new mongoose.Schema({
     trim: true,
   },
   isOpen: {
-    type: boolean,
+    type: Boolean,
     default: true,
   },
   rating: {
     type: Number,
-    min: 1,
+    default: 0,
+    min: 0,
     max: 5,
   },
   totalRatings: {
@@ -61,15 +71,17 @@ const restaurantSchema = new mongoose.Schema({
   plan: {
     type: String,
     enum: ["free", "pro"],
+    default: "free",
   },
   bannerImage: {
     type: String,
-    required: true,
   },
   stripeCustomerId: {
     type: String,
   },
 });
+
+restaurantSchema.index({ location: "2dsphere" });
 
 const Restaurant = mongoose.model("Restaurant", restaurantSchema);
 export default Restaurant;
