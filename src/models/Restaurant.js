@@ -35,8 +35,6 @@ const restaurantSchema = new mongoose.Schema({
         message: "Coordinates must be [lng, lat]",
       },
     },
-    required: true,
-    index: "2dsphere",
   },
   address: {
     type: String,
