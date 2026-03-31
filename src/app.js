@@ -1,6 +1,7 @@
 import express from "express";
 import restaurantRouter from "./routes/restaurantRoutes.js";
 import healthRouter from "./routes/healthRoutes.js";
+import globalErrorHandler from "./middleware/errorHandler.js";
 
 function createApp() {
   const app = express();
@@ -9,6 +10,13 @@ function createApp() {
   app.use("/api/v1/health", healthRouter);
 
   app.use("/api/v1/restaurants", restaurantRouter);
+
+  app.use((req, res, next) => {
+    next(new AppError(`Cannot find ${req.originalUrl}`, 404));
+  });
+
+  app.use(globalErrorHandler);
+
   return app;
 }
 
