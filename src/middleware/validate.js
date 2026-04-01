@@ -3,6 +3,7 @@ function validate(schema) {
   return function (req, res, next) {
     const { error, value } = schema.validate(
       { ...req.body, ...req.params, ...req.query },
+      { stripUnknown: true },
       { abortEarly: false },
     );
     if (error) {
