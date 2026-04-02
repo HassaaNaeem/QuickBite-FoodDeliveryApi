@@ -17,10 +17,12 @@ const userSchema = new mongoose.Schema(
       match: [/^\S+@\S+\.\S+$/, "Please use a valid email address"],
     },
     password: {
-      required: true,
       type: String,
       minlength: 8,
       select: false,
+      required: () => {
+        return !this.googleId;
+      },
     },
     phone: {
       type: String,
@@ -46,15 +48,19 @@ const userSchema = new mongoose.Schema(
     },
     refreshTokens: [
       {
-        token: String,
+        token: { type: String, required: true },
         createdAt: {
           type: Date,
           default: Date.now,
+          required: true,
         },
-        expiresAt: Date,
+        expiresAt: { type: Date, required: true },
       },
     ],
-    deviceTokens: [String],
+    deviceTokens: {
+      type: [String],
+      default: [],
+    },
     googleId: { type: String },
     passwordChangedAt: {
       type: Date,
@@ -70,6 +76,13 @@ userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   this.password = await bcrypt.hash(this.password, 5);
+  next();
+});
+
+userSchema.pre("save", function (next) {
+  if (!this.isModified("password") || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
